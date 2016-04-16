@@ -2,17 +2,13 @@ use strict;
 use warnings;
 use Mojolicious::Lite;
 use MIME::Base64;
-use LWP::Curl;
-
-sub getfromtextb {
-	return LWP::Curl->new()->get('http://textb.org/r/' . shift, '');
-}
+use LWP::Simple;
 
 get '/' => sub {
 	my $c = shift;
 
 	my $title = $c->param("text");
-	$title = getfromtextb($title) if $title && $c->param('textb');
+	$title = get("http://textb.org/r/$title/") if $title && $c->param('textb');
 	$title = decode_base64($title) if $title && $c->param('base64');
 
 	my $where = $c->param('where');
